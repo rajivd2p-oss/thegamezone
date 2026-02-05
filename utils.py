@@ -23,7 +23,6 @@ def encrypt_data(data, secret, output_filepath):
     with open(output_filepath, "wb") as f:
         f.write(encrypted)
     
-    print(f"✓ File encrypted: {output_filepath}")
     return output_filepath
 
 
