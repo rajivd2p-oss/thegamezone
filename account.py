@@ -1,6 +1,8 @@
 import os 
+import json
 from findmy import AppleAccount, LocalAnisetteProvider, LoginState, TrustedDeviceSecondFactorMethod, SmsSecondFactorMethod
 from dotenv import load_dotenv
+from utils import encrypt_data
 
 
 load_dotenv()
@@ -26,5 +28,6 @@ if state == LoginState.REQUIRE_2FA:
 
     method.submit(code)
 
-account.to_json("account.json")
+account_info = encrypt_data(json.dumps(account.to_json()), os.getenv("SECRET_KEY"), "account.enc")
+
 
