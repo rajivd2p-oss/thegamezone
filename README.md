@@ -28,7 +28,7 @@ Returns the location of all devices and the timestamp at which each had its loca
 ```
 GET /devices/<slug>
 ```
-Returns the location of the selected device and the timestamp at which its location was checked.
+Returns the location of the selected device and the timestamp at which its location was checked. The slug used is the name of the corresponding `.json` file.
 
 ## Notes
 You can rename the device's `.json` files to anything, which is recommended to make them more readable. This name is the name that is used in the API response.
