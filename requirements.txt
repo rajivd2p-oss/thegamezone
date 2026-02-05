@@ -3,6 +3,7 @@ aiohttp==3.13.3
 aiosignal==1.4.0
 Anisette==1.2.4
 appdirs==1.4.4
+asgiref==3.11.1
 attrs==25.4.0
 beautifulsoup4==4.14.3
 bleak==2.1.1
@@ -27,6 +28,7 @@ pyobjc-core==12.1
 pyobjc-framework-Cocoa==12.1
 pyobjc-framework-CoreBluetooth==12.1
 pyobjc-framework-libdispatch==12.1
+python-dotenv==1.2.1
 setuptools==80.10.2
 six==1.17.0
 soupsieve==2.8.3

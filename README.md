@@ -6,7 +6,7 @@ Airtag tracker + web API. Made for Hack Club the Game, a 100 player Jet Lag insp
 1. Install dependencies with `python3 pip install -r requirements.txt` (in a virtual environment, you get the deal)
 2. Fill out `EMAIL` and `PASSWORD` in `.env`, as well as a randomly generated string for `API_KEY` and `SECRET_KEY`. You can remove `EMAIL` and `PASSWORD` after you complete Step 3.
 3. Generate your encoded account session using `python3 account.py`.
-4. Dump the accessory info from your Mac. If you have a Mac running MacOS 14 or under, great! Run `python3 -m findmy decrypt --out-dir devices/`. Otherwise, follow the instructions [here](https://docs.mikealmel.ooo/FindMy.py/getstarted/02-fetching.html), or use a VM running MacOS 14 or under (i.e [this one](https://github.com/sickcodes/Docker-OSX)) (may take 1-2 hours to set up) and put the `.json` files in the `devices` subdirectory. If you have other devices attached to your account that you don't want to be tracked with this API, delete the corresponding `.json` file.
+4. Dump the accessory info from your Mac. If you have a Mac running MacOS 14 or under, great! Run `python3 -m findmy decrypt --out-dir devices/`. Otherwise, follow the ingstructions [here](https://docs.mikealmel.ooo/FindMy.py/getstarted/02-fetching.html), or use a VM running MacOS 14 or under (i.e [this one](https://github.com/sickcodes/Docker-OSX)) (may take 1-2 hours to set up) and put the `.json` files in the `devices` subdirectory. If you have other devices attached to your account that you don't want to be tracked with this API, delete the corresponding `.json` file.
 5. Start the API with `flask run`.
 
 ## Environment variables
