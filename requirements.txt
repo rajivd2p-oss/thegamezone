@@ -28,7 +28,7 @@ pyobjc-core==12.1
 pyobjc-framework-Cocoa==12.1
 pyobjc-framework-CoreBluetooth==12.1
 pyobjc-framework-libdispatch==12.1
-python-dotenv==1.2.1
+python-dotenv==1.2.2
 setuptools==80.10.2
 six==1.17.0
 soupsieve==2.8.3
