@@ -22,7 +22,7 @@ API_KEY = os.getenv('API_KEY')
 
 @app.before_request
 def check_api_key():
-    if request.path.startswith('/static'):
+    if request.path.startswith('/static') or request.path == '/health':
         return
     auth_header = request.headers.get('Authorization')
     if not auth_header or not auth_header.startswith('Bearer '):
@@ -48,6 +48,11 @@ if os.path.exists("account.enc"):
         account = None
 else:
     logger.warning("account.enc not found. API will not function without this file, check the README!")
+
+@app.route('/health', methods=['GET'])
+def health():
+    return '', 204
+
 
 @app.route('/devices', methods=['GET'])
 def get_all_devices():
