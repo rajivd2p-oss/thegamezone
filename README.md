@@ -30,6 +30,15 @@ GET /devices/<slug>
 ```
 Returns the location of the selected device and the timestamp at which its location was checked. The slug used is the name of the corresponding `.json` file.
 
+```
+POST /devices
+```
+Adds a new device by uploading its `.json` file. Accepts a `multipart/form-data` request with:
+- `file`: the accessory `.json` file
+- `name`: the slug the device will be saved as (alphanumeric, hyphens, and underscores only)
+
+Returns the slug of the created device on success. Returns 409 if a device with that name already exists.
+
 ## Production deployment
 
 Use a WSGI server instead of `flask run`:

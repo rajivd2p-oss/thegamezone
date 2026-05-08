@@ -5,7 +5,7 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app.py utils.py ani_libs.bin ./
+COPY app.py utils.py ./
 
 EXPOSE 5000
 
