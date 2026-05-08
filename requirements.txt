@@ -16,11 +16,13 @@ FindMy==0.9.8
 Flask==3.1.2
 frozenlist==1.8.0
 fs==2.4.16
+gunicorn==26.0.0
 idna==3.11
 itsdangerous==2.2.0
 Jinja2==3.1.6
 MarkupSafe==3.0.3
 multidict==6.7.1
+packaging==26.2
 propcache==0.4.1
 pycparser==3.0
 pyelftools==0.32
