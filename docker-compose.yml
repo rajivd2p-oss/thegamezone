@@ -8,3 +8,10 @@ services:
     env_file: .env
     ports:
       - "${PORT:-5000}:${PORT:-5000}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${PORT:-5000}/devices"]
+      interval: 30m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 5s
