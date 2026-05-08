@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 from flask import Flask, jsonify, request
 from findmy import AppleAccount, FindMyAccessory
@@ -55,6 +56,30 @@ def get_all_devices():
     locations = account.fetch_location(airtags).values()
     parsed_locations = convert_to_safe_location(zip(all_airtag_metadata, locations))
     return jsonify(parsed_locations)
+
+
+@app.route('/devices', methods=['POST'])
+def add_device():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+    file = request.files['file']
+    slug = request.form.get('name', '').strip()
+    if not slug:
+        return jsonify({"error": "Missing 'name' field"}), 400
+    if not all(c.isalnum() or c in ('-', '_') for c in slug):
+        return jsonify({"error": "Name may only contain alphanumeric characters, hyphens, and underscores"}), 400
+    try:
+        data = file.read().decode('utf-8')
+        json.loads(data)
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return jsonify({"error": "Invalid JSON file"}), 400
+    dest = os.path.join(AIRTAG_PATH, slug + ".json")
+    if os.path.exists(dest):
+        return jsonify({"error": f"Device '{slug}' already exists"}), 409
+    with open(dest, 'w') as f:
+        f.write(data)
+    logger.info(f"Added device '{slug}'")
+    return jsonify({"slug": slug}), 201
 
 
 @app.route('/devices/<slug>', methods=['GET'])
