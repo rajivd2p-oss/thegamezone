@@ -5,8 +5,6 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app.py utils.py account.enc ani_libs.bin devices ./
-
-EXPOSE 5000
+COPY app.py utils.py ./
 
 CMD gunicorn -w 4 -b 0.0.0.0:${PORT:-5000} app:app
