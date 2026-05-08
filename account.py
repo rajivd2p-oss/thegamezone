@@ -1,11 +1,12 @@
-import os 
+import os
 import json
+import sys
 from findmy import AppleAccount, LocalAnisetteProvider, LoginState, TrustedDeviceSecondFactorMethod, SmsSecondFactorMethod
 from dotenv import load_dotenv
 from utils import encrypt_data
 
-
 load_dotenv()
+
 ani = LocalAnisetteProvider(libs_path="ani_libs.bin")
 account = AppleAccount(ani)
 
@@ -21,13 +22,15 @@ if state == LoginState.REQUIRE_2FA:
             print(f"{i} - SMS ({method.phone_number})")
 
     ind = int(input("Method? > "))
-
     method = methods[ind]
     method.request()
     code = input("Code? > ")
-
     method.submit(code)
 
-account_info = encrypt_data(json.dumps(account.to_json()), os.getenv("SECRET_KEY"), "account.enc")
+secret_key = os.getenv("SECRET_KEY")
+if not secret_key:
+    print("ERROR: SECRET_KEY environment variable is not set.", file=sys.stderr)
+    sys.exit(1)
 
-
+encrypt_data(json.dumps(account.to_json()), secret_key, "account.enc")
+print("Account saved to account.enc")
