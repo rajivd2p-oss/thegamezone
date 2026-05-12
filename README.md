@@ -9,6 +9,14 @@ Airtag tracker + web API. Made for Hack Club the Game, a 100 player Jet Lag insp
 4. Dump the accessory info from your Mac. If you have a Mac running MacOS 14 or under, great! Run `python3 -m findmy decrypt --out-dir devices/`. Otherwise, follow the instructions [here](https://docs.mikealmel.ooo/FindMy.py/getstarted/02-fetching.html), or use a VM running MacOS 14 or under (i.e [this one](https://github.com/sickcodes/Docker-OSX)) (may take 1-2 hours to set up) and put the `.json` files in the `devices` subdirectory. If you have other devices attached to your account that you don't want to be tracked with this API, delete the corresponding `.json` file.
 5. Start the API with `flask run`.
 
+## Development mode
+
+Set `DEV_MODE=true` to run without Apple credentials. All location endpoints return randomized, plausible coordinates inside Manhattan that drift slightly on each request. No `account.enc`, `ani_libs.bin`, or device `.json` files are required — the POST `/devices` endpoint registers devices in-memory only.
+
+```bash
+DEV_MODE=true API_KEY=dev flask run
+```
+
 ## Environment variables
 | Variable | Explanation |
 |----------|-------------|
@@ -17,6 +25,7 @@ Airtag tracker + web API. Made for Hack Club the Game, a 100 player Jet Lag insp
 | `SECRET_KEY` | Key used to encrypt the account session |
 | `API_KEY` | API key (present as a bearer token in a request's header) needed to access the API |
 | `PORT` | Port that the API runs on |
+| `DEV_MODE` | Set to `true` to mock Manhattan locations without Apple credentials (default: `false`) |
 
 ## Routes
 
