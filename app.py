@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import random
 import logging
@@ -28,6 +29,10 @@ _MANHATTAN_LON = (-74.0200, -73.9100)
 
 # Seeded per-device state so locations drift plausibly between requests
 _mock_state: dict[str, dict] = {}
+
+def _slugify(name: str) -> str:
+    return re.sub(r'[^a-zA-Z0-9\-_]', '', name.replace(' ', '')).strip('-_')
+
 
 def _mock_location(slug: str) -> dict:
     state = _mock_state.setdefault(slug, {
@@ -104,37 +109,37 @@ def add_device():
         body = request.get_json(silent=True)
         if not body:
             return jsonify({"error": "Invalid JSON body"}), 400
-        slug = (body.get('name') or '').strip()
-        if not slug:
+        raw_name = (body.get('name') or '').strip()
+        if not raw_name:
             return jsonify({"error": "Missing 'name' field in device JSON"}), 400
+        slug = _slugify(raw_name)
         data = json.dumps(body)
     else:
         if 'file' not in request.files:
             return jsonify({"error": "No file provided"}), 400
         file = request.files['file']
         filename = file.filename or ''
-        slug = filename.removesuffix('.json').strip()
-        if not slug:
+        raw_name = filename.removesuffix('.json').strip()
+        if not raw_name:
             return jsonify({"error": "Could not infer device name from filename"}), 400
-        if DEV_MODE:
-        # In dev mode accept any valid-looking JSON without writing to disk
+        slug = _slugify(raw_name)
         try:
-            json.loads(file.read().decode('utf-8'))
-        except (UnicodeDecodeError, json.JSONDecodeError):
-            return jsonify({"error": "Invalid JSON file"}), 400
-        logger.info(f"[DEV] Registered mock device '{slug}'")
-        _mock_state.setdefault(slug, {
-            "lat": random.uniform(*_MANHATTAN_LAT),
-            "lon": random.uniform(*_MANHATTAN_LON),
-        })
-        return jsonify({"slug": slug}), 201
-    try:
             data = file.read().decode('utf-8')
             json.loads(data)
         except (UnicodeDecodeError, json.JSONDecodeError):
             return jsonify({"error": "Invalid JSON file"}), 400
-    if not all(c.isalnum() or c in ('-', '_') for c in slug):
-        return jsonify({"error": "Name may only contain alphanumeric characters, hyphens, and underscores"}), 400
+
+    if not slug:
+        return jsonify({"error": "Device name contains no valid characters for a slug"}), 400
+
+    if DEV_MODE:
+        _mock_state.setdefault(slug, {
+            "lat": random.uniform(*_MANHATTAN_LAT),
+            "lon": random.uniform(*_MANHATTAN_LON),
+        })
+        logger.info(f"[DEV] Registered mock device '{slug}'")
+        return jsonify({"slug": slug}), 201
+
     os.makedirs(AIRTAG_PATH, exist_ok=True)
     dest = os.path.join(AIRTAG_PATH, slug + ".json")
     if os.path.exists(dest):

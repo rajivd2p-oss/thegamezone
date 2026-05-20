@@ -26,8 +26,14 @@ def upload_device(endpoint: str, path: str, api_key: str) -> bool:
             print(f"  OK: {result.get('slug')}")
             return True
     except urllib.error.HTTPError as e:
-        error = json.loads(e.read()).get("error", e.reason)
+        try:
+            error = json.loads(e.read()).get("error", e.reason)
+        except Exception:
+            error = e.reason
         print(f"  FAILED ({e.code}): {error}")
+        return False
+    except urllib.error.URLError as e:
+        print(f"  FAILED (connection error): {e.reason}")
         return False
 
 
