@@ -3,6 +3,7 @@ account.enc
 ani_libs.bin
 test
 devices
+old
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -100,15 +100,23 @@ def get_all_devices():
 
 @app.route('/devices', methods=['POST'])
 def add_device():
-    if 'file' not in request.files:
-        return jsonify({"error": "No file provided"}), 400
-    file = request.files['file']
-    slug = request.form.get('name', '').strip()
-    if not slug:
-        return jsonify({"error": "Missing 'name' field"}), 400
-    if not all(c.isalnum() or c in ('-', '_') for c in slug):
-        return jsonify({"error": "Name may only contain alphanumeric characters, hyphens, and underscores"}), 400
-    if DEV_MODE:
+    if request.is_json:
+        body = request.get_json(silent=True)
+        if not body:
+            return jsonify({"error": "Invalid JSON body"}), 400
+        slug = (body.get('name') or '').strip()
+        if not slug:
+            return jsonify({"error": "Missing 'name' field in device JSON"}), 400
+        data = json.dumps(body)
+    else:
+        if 'file' not in request.files:
+            return jsonify({"error": "No file provided"}), 400
+        file = request.files['file']
+        filename = file.filename or ''
+        slug = filename.removesuffix('.json').strip()
+        if not slug:
+            return jsonify({"error": "Could not infer device name from filename"}), 400
+        if DEV_MODE:
         # In dev mode accept any valid-looking JSON without writing to disk
         try:
             json.loads(file.read().decode('utf-8'))
@@ -121,10 +129,12 @@ def add_device():
         })
         return jsonify({"slug": slug}), 201
     try:
-        data = file.read().decode('utf-8')
-        json.loads(data)
-    except (UnicodeDecodeError, json.JSONDecodeError):
-        return jsonify({"error": "Invalid JSON file"}), 400
+            data = file.read().decode('utf-8')
+            json.loads(data)
+        except (UnicodeDecodeError, json.JSONDecodeError):
+            return jsonify({"error": "Invalid JSON file"}), 400
+    if not all(c.isalnum() or c in ('-', '_') for c in slug):
+        return jsonify({"error": "Name may only contain alphanumeric characters, hyphens, and underscores"}), 400
     os.makedirs(AIRTAG_PATH, exist_ok=True)
     dest = os.path.join(AIRTAG_PATH, slug + ".json")
     if os.path.exists(dest):
