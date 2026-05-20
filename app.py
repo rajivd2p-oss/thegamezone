@@ -56,7 +56,7 @@ if not DEV_MODE:
 account = None
 if DEV_MODE:
     logger.warning("DEV_MODE is enabled — Apple account auth bypassed, locations are mocked.")
-elif os.path.exists("account.enc"):
+elif os.path.isfile("account.enc"):
     try:
         logger.info("Found account data, loading account")
         account = AppleAccount.from_json(decrypt_data("account.enc", os.getenv("SECRET_KEY")), anisette_libs_path="ani_libs.bin")
