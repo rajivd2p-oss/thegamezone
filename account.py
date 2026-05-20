@@ -7,7 +7,8 @@ from utils import encrypt_data
 
 load_dotenv()
 
-ani = LocalAnisetteProvider(libs_path="ani_libs.bin")
+data_dir = os.getenv("DATA_DIR", ".")
+ani = LocalAnisetteProvider(libs_path=os.path.join(data_dir, "ani_libs.bin"))
 account = AppleAccount(ani)
 
 state = account.login(os.getenv("EMAIL"), os.getenv("PASSWORD"))
@@ -32,5 +33,7 @@ if not secret_key:
     print("ERROR: SECRET_KEY environment variable is not set.", file=sys.stderr)
     sys.exit(1)
 
-encrypt_data(json.dumps(account.to_json()), secret_key, "account.enc")
-print("Account saved to account.enc")
+os.makedirs(data_dir, exist_ok=True)
+output_path = os.path.join(data_dir, "account.enc")
+encrypt_data(json.dumps(account.to_json()), secret_key, output_path)
+print(f"Account saved to {output_path}")

@@ -2,10 +2,12 @@ services:
   app:
     build: .
     volumes:
-      - ./account.enc:/app/account.enc:ro
-      - ./ani_libs.bin:/app/ani_libs.bin:ro
-      - ./devices:/app/devices
+      - appdata:/app/data
+    environment:
+      - DATA_DIR=/app/data
     env_file: .env
     ports:
       - "${PORT:-5000}:${PORT:-5000}"
-   
+
+volumes:
+  appdata:

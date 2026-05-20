@@ -26,6 +26,7 @@ DEV_MODE=true API_KEY=dev flask run
 | `API_KEY` | API key (present as a bearer token in a request's header) needed to access the API |
 | `PORT` | Port that the API runs on |
 | `DEV_MODE` | Set to `true` to mock Manhattan locations without Apple credentials (default: `false`) |
+| `DATA_DIR` | Directory where `account.enc` and `devices/` are stored (default: `.`) |
 
 ## Routes
 
@@ -63,6 +64,18 @@ Use a WSGI server instead of `flask run`:
 pip install gunicorn
 gunicorn -w 4 -b 0.0.0.0:$PORT app:app
 ```
+
+### Docker
+
+A `docker-compose.yml` is provided. `account.enc` and `devices/` are stored in a named volume (`appdata`) mounted at `/app/data`, so they persist across redeploys.
+
+On first deploy, generate `account.enc` by execing into the running container:
+
+```bash
+docker compose exec app python account.py
+```
+
+`ani_libs.bin` is downloaded automatically by the `findmy` library on first run and saved into the named volume alongside `account.enc`.
 
 
 ## Notes

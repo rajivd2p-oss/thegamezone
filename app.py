@@ -10,7 +10,9 @@ from utils import convert_to_safe_location, decrypt_data
 
 load_dotenv()
 
-AIRTAG_PATH = "devices"
+DATA_DIR = os.getenv("DATA_DIR", ".")
+AIRTAG_PATH = os.path.join(DATA_DIR, "devices")
+ACCOUNT_PATH = os.path.join(DATA_DIR, "account.enc")
 DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
 
 logging.basicConfig(
@@ -56,16 +58,16 @@ if not DEV_MODE:
 account = None
 if DEV_MODE:
     logger.warning("DEV_MODE is enabled — Apple account auth bypassed, locations are mocked.")
-elif os.path.isfile("account.enc"):
+elif os.path.isfile(ACCOUNT_PATH):
     try:
         logger.info("Found account data, loading account")
-        account = AppleAccount.from_json(decrypt_data("account.enc", os.getenv("SECRET_KEY")), anisette_libs_path="ani_libs.bin")
+        account = AppleAccount.from_json(decrypt_data(ACCOUNT_PATH, os.getenv("SECRET_KEY")), anisette_libs_path=os.path.join(DATA_DIR, "ani_libs.bin"))
         logger.info("Successfully loaded account")
     except Exception as e:
         logger.error(f"Failed to load account: {str(e)}", exc_info=True)
         account = None
 else:
-    logger.warning("account.enc not found. API will not function without this file, check the README!")
+    logger.warning(f"account.enc not found at {ACCOUNT_PATH}. API will not function without this file, check the README!")
 
 @app.before_request
 def check_api_key():
