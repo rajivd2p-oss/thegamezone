@@ -51,7 +51,7 @@ Adds a new device. Accepts two formats:
 
 Slugs may only contain alphanumeric characters, hyphens, and underscores. Returns the slug of the created device on success, or 409 if a device with that slug already exists.
 
-To bulk-upload all files in the `devices/` directory to a remote endpoint:
+To bulk-upload all files in the `devices/` directory to a remote endpoint (https://something/devices):
 ```bash
 python3 upload.py <endpoint> --api-key <key>
 ```
