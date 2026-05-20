@@ -2,6 +2,5 @@
 __pycache__/
 .env
 account.enc
-account.py
 devices/
 *.pyc
