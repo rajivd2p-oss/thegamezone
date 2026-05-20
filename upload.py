@@ -6,7 +6,7 @@ import sys
 import urllib.request
 import urllib.error
 
-DEVICES_DIR = "devices"
+DEVICES_DIR = os.path.join(os.getenv("DATA_DIR", "."), "devices")
 
 
 def upload_device(endpoint: str, path: str, api_key: str) -> bool:
