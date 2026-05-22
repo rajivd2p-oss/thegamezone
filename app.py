@@ -100,8 +100,10 @@ def get_all_devices():
         slugs = [f[:-5] for f in all_airtag_metadata if f.endswith(".json")]
         return jsonify([_mock_location(s) for s in slugs])
     airtags = [FindMyAccessory.from_json(os.path.join(AIRTAG_PATH, path)) for path in all_airtag_metadata]
-    locations = account.fetch_location(airtags).values()
-    parsed_locations = convert_to_safe_location(zip(all_airtag_metadata, locations))
+    location_map = account.fetch_location(airtags)
+    for airtag, path in zip(airtags, all_airtag_metadata):
+        airtag.to_json(os.path.join(AIRTAG_PATH, path))
+    parsed_locations = convert_to_safe_location(zip(all_airtag_metadata, location_map.values()))
     return jsonify(parsed_locations)
 
 
