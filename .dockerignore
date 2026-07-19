@@ -1,6 +1,17 @@
+# Python environment and dependencies
 .venv/
 __pycache__/
+*.pyc
+
+# Sensitive environment and credentials
 .env
 account.enc
+ani_libs.bin
+
+# Local data and device storage
 devices/
-*.pyc
+
+# Logs and system files
+*.log
+.DS_Store
+
